@@ -7,7 +7,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.startTiles     = 1;
   this.turnnum = 0;
   this.tileorder   = [4, 16, -1];
-  this.colors = []
+  this.colors = ["#eee4da", "#f2b179", "#08034e"];
   this.spawnfreq = 3;
 
   this.inputManager.on("move", this.move.bind(this));
@@ -53,11 +53,11 @@ GameManager.prototype.setup = function () {
     this.over        = false;
     this.won         = false;
     this.keepPlaying = false;
+    this.colors = ["#eee4da", "#f2b179", "#08034e"];
     this.turnnum     = 0;
     document.getElementById("nextup").innerText = this.spawnfreq - (this.turnnum % this.spawnfreq) - 1;
 
     // Add the initial tiles
-    // this.addStartTiles();
     this.addRandomTile();
   }
 
@@ -80,7 +80,8 @@ GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
     var i = (this.turnnum/this.spawnfreq)%this.tileorder.length;
     var value = this.tileorder[i];
-    document.getElementById("nextup").style.background = "#f0e5c4";
+    document.getElementById("nextup").style.background = this.colors[(i+1) % this.colors.length];
+    document.getElementById("nextup").style.color = ["rgba(119, 110, 101, 0.9)", "rgba(119, 110, 101, 0.9)", "#f9f6f2"][(i+1) % 3];
 
     var tile = new Tile(this.grid.randomAvailableCell(), value);
 
@@ -167,9 +168,6 @@ GameManager.prototype.move = function (direction) {
 
         // Only one merger per row traversal?
         if (next && Math.abs(next.value) === Math.abs(tile.value) && !next.mergedFrom) {
-            console.log(tile.value);
-            console.log(next.value);
-            console.log(tile.value + next.value);
           var merged = new Tile(positions.next, tile.value + next.value);
           merged.mergedFrom = [tile, next];
 
